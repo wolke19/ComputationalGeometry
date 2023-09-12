@@ -58,6 +58,7 @@ function getHull() {
 
 function resetConvexHull2D() {
     anchorArr.length = 0
+    hullArr.length = 0
 }
 
 addEventListener("click", function (event){
