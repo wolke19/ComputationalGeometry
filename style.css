@@ -1,0 +1,33 @@
+#myCanvas {
+    position: relative;
+    background: #1c1f29;
+    width: 80%;
+    height: 80%;
+    margin-top: 1%;
+    border-radius: 10px;
+    border: 2px solid lightgray;
+}
+select {
+    width: 300px;
+    display: flex;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #CDD9ED;
+    margin-top: 1%;
+}
+button {
+    position: relative;
+    border: none;
+    border-radius: 5px;
+    background-color: #CDD9ED;
+    padding: 5px 15px;
+    margin-top: 1%;
+}
+body {
+    background-color: #1c1f29;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
