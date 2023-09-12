@@ -22,6 +22,7 @@ class StaticPoint{
         this.y = mouse.y
         this.size = opts.pointSize
         this.color = opts.pointColor
+        this.order = 0
     }
     draw() {
         ctx.fillStyle = this.color
@@ -83,9 +84,7 @@ dropdown.onchange = function () {
     dropdownSelected = dropdown.value
 }
 
-addEventListener("click", function (event){
-    console.log("click")
-})
+
 
 
 

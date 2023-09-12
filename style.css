@@ -1,7 +1,7 @@
 #myCanvas {
     position: relative;
     background: #1c1f29;
-    width: 80%;
+    width: 85%;
     height: 80%;
     margin-top: 1%;
     border-radius: 10px;
@@ -29,5 +29,5 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: hidden;
+
 }
