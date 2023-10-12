@@ -1,20 +1,20 @@
-let anchorArr = [],
+let pointArr = [],
     hullArr = []
 function handleConvexHull2D(){
-    if (anchorArr.length > 0){
-        ctx.beginPath()
-        for (const anchorArrElement of anchorArr) {
+    if (pointArr.length > 0){
+        for (const anchorArrElement of pointArr) {
             anchorArrElement.draw()
         }
     }
-    if (hullArr.length > 2){
-        ctx.moveTo(hullArr[hullArr.length-1].x, hullArr[hullArr.length-1].y)
-        for (const hullArrElement of hullArr) {
-            ctx.lineTo(hullArrElement.x, hullArrElement.y)
-            ctx.strokeStyle = opts.pointColor
-            ctx.stroke()
-        }
-    }
+    drawLineFromPointArr(hullArr, 3, true)
+    // if (hullArr.length > 2){
+    //     ctx.moveTo(hullArr[hullArr.length-1].x, hullArr[hullArr.length-1].y)
+    //     for (const hullArrElement of hullArr) {
+    //         ctx.lineTo(hullArrElement.x, hullArrElement.y)
+    //         ctx.strokeStyle = opts.pointColor
+    //         ctx.stroke()
+    //     }
+    // }
 }
 
 function getHull() {
@@ -22,28 +22,28 @@ function getHull() {
     let p0 = 0
 
     // find p0
-    for (let i = 1; i < anchorArr.length; i++) {
-        if (anchorArr[i].y > anchorArr[p0].y ||
-                anchorArr[i].y === anchorArr[p0].y && anchorArr[i].x > anchorArr[p0].x) {
+    for (let i = 1; i < pointArr.length; i++) {
+        if (pointArr[i].y > pointArr[p0].y ||
+                pointArr[i].y === pointArr[p0].y && pointArr[i].x > pointArr[p0].x) {
             p0 = i
         }
     }
 
     // compute and sort by slope from p0
-    for (let i = 0; i < anchorArr.length; i++) {
-        anchorArr[i].order = getSlope(anchorArr[i], anchorArr[p0])
+    for (let i = 0; i < pointArr.length; i++) {
+        pointArr[i].order = getSlope(pointArr[i], pointArr[p0])
     }
-    anchorArr.sort((a,b) => {
+    pointArr.sort((a,b) => {
         return a.order - b.order
     })
 
     // find hull
-    hullArr.push(anchorArr[0], anchorArr[1])
-    for (let i = 2; i < anchorArr.length; i++) {
-        while (hullArr.length > 2 && isRightTurn(anchorArr[i], hullArr[hullArr.length-1], hullArr[hullArr.length-2])){
+    hullArr.push(pointArr[0], pointArr[1])
+    for (let i = 2; i < pointArr.length; i++) {
+        while (hullArr.length > 2 && isRightTurn(pointArr[i], hullArr[hullArr.length-1], hullArr[hullArr.length-2])){
             hullArr.pop()
         }
-        hullArr.push(anchorArr[i])
+        hullArr.push(pointArr[i])
     }
 
     function isRightTurn(point, hullTop, hullSecond){
@@ -57,27 +57,28 @@ function getHull() {
 
 
 function resetConvexHull2D() {
-    anchorArr.length = 0
+    pointArr.length = 0
     hullArr.length = 0
 }
 
-addEventListener("click", function (event){
-    if (dropdownSelected === "ch2d" && mouse.onCanvas){
-        let existingPoint = false
-        for (let i = 0; i < anchorArr.length; i++) {
-            if (mouse.x < anchorArr[i].x + anchorArr[i].size
-                && mouse.x > anchorArr[i].x - anchorArr[i].size
-                && mouse.y < anchorArr[i].y + anchorArr[i].size
-                && mouse.y > anchorArr[i].y - anchorArr[i].size) {
-                existingPoint = true
-                anchorArr.splice(i,1)
-                break
-            }
-        }
-        if (!existingPoint) anchorArr.push(new StaticPoint())
-        if (anchorArr.length >= 2) getHull()
-    }
-})
+function mouseClickCh2d(){
+    checkForExistingPoint(pointArr)
+    // let existingPoint = false
+    // for (let i = 0; i < pointArr.length; i++) {
+    //     if (mouse.x < pointArr[i].x + pointArr[i].size
+    //         && mouse.x > pointArr[i].x - pointArr[i].size
+    //         && mouse.y < pointArr[i].y + pointArr[i].size
+    //         && mouse.y > pointArr[i].y - pointArr[i].size) {
+    //         existingPoint = true
+    //         pointArr.splice(i,1)
+    //         break
+    //     }
+    // }
+    // if (!existingPoint) pointArr.push(new StaticPoint(mouse.x, mouse.y))
+    if (pointArr.length >= 2) getHull()
+}
+
+
 
 
 

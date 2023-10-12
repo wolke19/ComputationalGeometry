@@ -10,15 +10,23 @@
   <form>
     <select id="dropdown" name >
       <option value="ch2d" >Convex Hull 2D</option>
-      <option value="ch3d" >Convex Hull 3D</option>
+      <option value="intersect" >Line Intersection</option>
     </select>
   </form>
 
 
   <canvas id="myCanvas"></canvas>
-  <button type="Button" onclick="resetCanvas()">Reset Canvas</button>
 
+  <div class = "btn-group">
+    <button id="reset" type="Button" onclick="resetCanvas()">Reset Canvas</button>
+    <button id="newLine" type="Button" class="lineIntersect-btn"  onclick="newLine()" >New Line</button>
+  </div>
+
+
+  <script src="eventListeners.js"></script>
+  <script src="lineSegmentIntersection.js"></script>
   <script src="convexHull2D.js"></script>
+  <script src="helperFunctions.js"></script>
   <script src="hello.js"></script>
 </body>
 </html>

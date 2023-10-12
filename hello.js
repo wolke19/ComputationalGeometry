@@ -1,7 +1,7 @@
 let canvas = document.getElementById("myCanvas"),
     ctx = canvas.getContext("2d"),
-    w = canvas.width = window.innerWidth,
-    h = canvas.height = window.innerHeight,
+    w = canvas.width = window.innerWidth*0.85,
+    h = canvas.height = window.innerHeight*0.8,
     dropdown = document.getElementById("dropdown"),
     dropdownSelected = dropdown.value,
 
@@ -13,13 +13,14 @@ let canvas = document.getElementById("myCanvas"),
 
     opts= {
         pointColor: "lightgrey",
-        pointSize: 10
+        pointSize: 5
     };
 
 class StaticPoint{
-    constructor() {
-        this.x = mouse.x
-        this.y = mouse.y
+    constructor(x,y) {
+        this.x = x
+        this.y = y
+        this.z = 0
         this.size = opts.pointSize
         this.color = opts.pointColor
         this.order = 0
@@ -31,9 +32,43 @@ class StaticPoint{
         ctx.fill()
     }
 }
+
+class MovingPoint{
+    constructor(x,y, initSpeed, initDir, color) {
+        this.x = x
+        this.y = y
+        this.speed = initSpeed
+        this.dir = initDir
+        this.size = opts.pointSize
+        this.color = color
+    }
+
+    update(){
+        this.x += this.speed * -Math.sin(this.dir)
+        this.y += this.speed * -Math.cos(this.dir)
+    }
+
+    draw() {
+        ctx.fillStyle = this.color
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI)
+        ctx.fill()
+    }
+}
+
 function wipeCanvas() {
     ctx.fillStyle = "#1c1f29"
     ctx.fillRect(0, 0, w, h)
+}
+
+function manageButtons(){
+    for (const element of document.getElementsByClassName('lineIntersect-btn')) {
+        element.hidden = (dropdownSelected !== 'intersect')
+    }
+}
+
+function init(){
+    manageButtons()
 }
 function animate() {
     wipeCanvas()
@@ -41,48 +76,41 @@ function animate() {
         case "ch2d":
             handleConvexHull2D()
             break
-        case "ch3d":
-            ctx.fillStyle = "white"
-            ctx.fillRect(mouse.x, mouse.y, 5, 5)
+        case "intersect":
+            handleLines()
             break
     }
     requestAnimationFrame(animate)
 }
-animate()
 
+
+
+
+// INTERACTIONS
 function resetCanvas(){
     switch (dropdownSelected) {
         case "ch2d":
             resetConvexHull2D()
             break
-        case "ch3d":
+        case "intersect":
+            resetLineSegments()
             break
+
+
     }
 }
 
-window.addEventListener( 'resize', function(){
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-    wipeCanvas()
-})
 
-addEventListener("mousemove", function (event) {
-    let rect = canvas.getBoundingClientRect(),
-        scaleX = w / rect.width,
-        scaleY = h / rect.height;
-
-    mouse.x = (event.x - rect.left) * scaleX
-    mouse.y = (event.y - rect.top) * scaleY
-
-    mouse.onCanvas = !(event.x < rect.left
-        || event.x > rect.right
-        || event.y < rect.top
-        || event.y > rect.bottom)
-})
 
 dropdown.onchange = function () {
     dropdownSelected = dropdown.value
+    manageButtons()
 }
+
+
+
+init()
+animate()
 
 
 

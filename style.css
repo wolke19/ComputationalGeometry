@@ -13,17 +13,20 @@ select {
     padding: 16px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #CDD9ED;
+
     margin-top: 1%;
 }
 button {
     position: relative;
     border: none;
     border-radius: 5px;
-    background-color: #CDD9ED;
     padding: 5px 15px;
     margin-top: 1%;
 }
+button:hover{
+    background-color: grey;
+}
+
 body {
     background-color: #1c1f29;
     display: flex;
