@@ -31,3 +31,12 @@ addEventListener("mousemove", function (event) {
         || event.y < rect.top
         || event.y > rect.bottom)
 })
+
+dropdown.onchange = function () {
+    dropdownSelected = dropdown.value
+    manageButtons()
+}
+
+// document.getElementById("pointSizeSlider").oninput = function (){
+//     opts.pointSize = this.value
+// }

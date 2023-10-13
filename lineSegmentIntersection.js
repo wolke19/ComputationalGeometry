@@ -16,11 +16,9 @@ function newLine(){
 }
 
 function mouseClickIntersect() {
+    // create first line before filling with segments
     if (lineArr.length === 0) lineArr.push([])
-    lineArr[lineArr.length - 1].push(new StaticPoint(mouse.x, mouse.y))
-    console.log(lineArr)
-
-
+    insertPointWithCheck(lineArr[lineArr.length - 1])
 }
 
 function resetLineSegments(){

@@ -7,21 +7,13 @@ function handleConvexHull2D(){
         }
     }
     drawLineFromPointArr(hullArr, 3, true)
-    // if (hullArr.length > 2){
-    //     ctx.moveTo(hullArr[hullArr.length-1].x, hullArr[hullArr.length-1].y)
-    //     for (const hullArrElement of hullArr) {
-    //         ctx.lineTo(hullArrElement.x, hullArrElement.y)
-    //         ctx.strokeStyle = opts.pointColor
-    //         ctx.stroke()
-    //     }
-    // }
 }
 
 function getHull() {
     hullArr = []
     let p0 = 0
 
-    // find p0
+    // Find p0 (bottom right)
     for (let i = 1; i < pointArr.length; i++) {
         if (pointArr[i].y > pointArr[p0].y ||
                 pointArr[i].y === pointArr[p0].y && pointArr[i].x > pointArr[p0].x) {
@@ -29,7 +21,7 @@ function getHull() {
         }
     }
 
-    // compute and sort by slope from p0
+    // Compute and sort by slope from p0. Point.order is an attribute created for ordering purposes.
     for (let i = 0; i < pointArr.length; i++) {
         pointArr[i].order = getSlope(pointArr[i], pointArr[p0])
     }
@@ -37,7 +29,7 @@ function getHull() {
         return a.order - b.order
     })
 
-    // find hull
+    // Find hull
     hullArr.push(pointArr[0], pointArr[1])
     for (let i = 2; i < pointArr.length; i++) {
         while (hullArr.length > 2 && isRightTurn(pointArr[i], hullArr[hullArr.length-1], hullArr[hullArr.length-2])){
@@ -46,6 +38,8 @@ function getHull() {
         hullArr.push(pointArr[i])
     }
 
+    // If the middle point has a greater slope than the third point as seen from the first point, the curvature is to
+    // the right.
     function isRightTurn(point, hullTop, hullSecond){
         return (getSlope(hullSecond, hullTop) > getSlope(hullSecond, point))
     }
@@ -62,19 +56,7 @@ function resetConvexHull2D() {
 }
 
 function mouseClickCh2d(){
-    checkForExistingPoint(pointArr)
-    // let existingPoint = false
-    // for (let i = 0; i < pointArr.length; i++) {
-    //     if (mouse.x < pointArr[i].x + pointArr[i].size
-    //         && mouse.x > pointArr[i].x - pointArr[i].size
-    //         && mouse.y < pointArr[i].y + pointArr[i].size
-    //         && mouse.y > pointArr[i].y - pointArr[i].size) {
-    //         existingPoint = true
-    //         pointArr.splice(i,1)
-    //         break
-    //     }
-    // }
-    // if (!existingPoint) pointArr.push(new StaticPoint(mouse.x, mouse.y))
+    insertPointWithCheck(pointArr)
     if (pointArr.length >= 2) getHull()
 }
 

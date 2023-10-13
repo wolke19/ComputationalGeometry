@@ -13,7 +13,7 @@ let canvas = document.getElementById("myCanvas"),
 
     opts= {
         pointColor: "lightgrey",
-        pointSize: 5
+        pointSize: 3
     };
 
 class StaticPoint{
