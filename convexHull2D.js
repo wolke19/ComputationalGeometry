@@ -6,7 +6,7 @@ function handleConvexHull2D(){
             anchorArrElement.draw()
         }
     }
-    drawLineFromPointArr(hullArr, 3, true)
+    drawLineFromPointArr(hullArr, 2, true)
 }
 
 function getHull() {
@@ -45,6 +45,7 @@ function getHull() {
     }
 
     function getSlope(a, b){
+        // atan2 best for angle computation (umlaut: most stable but still expensive)
         return Math.atan2(b.y - a.y, b.x - a.x)
     }
 }

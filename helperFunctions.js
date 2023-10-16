@@ -16,7 +16,7 @@ function insertPointWithCheck(points){
     if (!existingPoint) points.push(new StaticPoint(mouse.x, mouse.y))
 }
 
-function drawLineFromPointArr(points, minPoints, inClosed){
+function drawLineFromPointArr(points, minPoints, isClosed){
     ctx.beginPath()
     if (points.length >= minPoints){
         ctx.moveTo(points[0].x, points[0].y)
@@ -24,7 +24,7 @@ function drawLineFromPointArr(points, minPoints, inClosed){
             ctx.lineTo(point.x, point.y)
         }
         ctx.strokeStyle = opts.pointColor
-        if (inClosed) ctx.closePath()
+        if (isClosed) ctx.closePath()
         ctx.stroke()
     }
 }
