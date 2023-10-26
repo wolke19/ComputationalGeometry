@@ -12,6 +12,7 @@ function insertPointWithCheck(points){
             }
         }
     }
+    console.log(points)
     if (!existingPoint) points.push(new StaticPoint(mouse.x, mouse.y))
 }
 
