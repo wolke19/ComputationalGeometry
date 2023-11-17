@@ -77,7 +77,7 @@ function animate() {
             handleConvexHull2D()
             break
         case "intersect":
-            handleLines()
+            handleIntersections()
             break
     }
     requestAnimationFrame(animate)
@@ -93,10 +93,9 @@ function resetCanvas(){
             resetConvexHull2D()
             break
         case "intersect":
-            resetLineSegments()
+            resetLines()
+            resetEvents()
             break
-
-
     }
 }
 
@@ -106,8 +105,6 @@ dropdown.onchange = function () {
     dropdownSelected = dropdown.value
     manageButtons()
 }
-
-
 
 init()
 animate()

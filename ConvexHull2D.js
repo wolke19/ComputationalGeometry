@@ -17,7 +17,7 @@ function mouseClickCh2d(){
 function fillHullArr() {
     if (pointArr.length < 3) return
     // Grahams Scan
-    if (true){
+    if (false){
         hullArr = []
 
         // set p0 to lowest point. Why doesnt leftmost point work???
