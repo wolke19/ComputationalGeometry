@@ -1,4 +1,5 @@
 let lineArr = [],
+    activeLineArr = [],
     eventArr = [],
     intersectionArr = [],
     drawing = false,
@@ -28,38 +29,42 @@ function findIntersections(){
     eventArr.sort((a,b) => {
         return b.x - a.x
     })
-    console.log(eventArr)
-
 
     while (eventArr.length !== 0){
         let event = eventArr.pop()
         switch (event.type){
             case 1: {
                 event.line.isActive = true
+                activeLineArr.push(event.line)
                 break
             }
             case 2: {
                 event.line.isActive = false
+                for (let i = 0; i < activeLineArr.length; i++) {
+                    if (activeLineArr[i] === event.line) activeLineArr.splice(i, 1)
+                }
                 break
             }
             case 3: {
                 let upperBound = Math.max(event.line.to.y, event.line.from.y)
                 let lowerBound = Math.min(event.line.to.y, event.line.from.y)
-                for (const line of lineArr) {
-                    if (line.isActive && line.to.y <= upperBound &&
-                        line.to.y >= lowerBound){
+
+                activeLineArr.sort((a,b) => {
+                    return b.to.y - a.to.y
+                })
+
+                for (const line of activeLineArr) {
+                    if (line.to.y <= upperBound && line.to.y >= lowerBound){
                         intersectionArr.push(new Intersection(event.x, line.from.y))
                     }
+                    if (line.to.y < lowerBound) break
                 }
             }
         }
     }
 }
 
-
-
 // EVERYTHING ELSE
-
 class Line{
     constructor(fromX, fromY, toX, toY, isActive) {
         this.from = {
@@ -80,13 +85,12 @@ class Line{
         ctx.lineTo(this.to.x, this.to.y)
         ctx.stroke()
         ctx.beginPath()
-        ctx.arc(this.from.x, this.from.y, 5, 0, 2 * Math.PI)
+        ctx.arc(this.from.x, this.from.y, 3, 0, 2 * Math.PI)
         ctx.fill()
-        ctx.arc(this.to.x, this.to.y, 5, 0, 2 * Math.PI)
+        ctx.arc(this.to.x, this.to.y, 3, 0, 2 * Math.PI)
         ctx.fill()
     }
 }
-
 class Event{
     constructor(type, x, line) {
         this.type = type //1, 2, 3 (start, end, intersection)
@@ -94,14 +98,13 @@ class Event{
         this.line = line
     }
 }
-
 class Intersection{
     constructor(x, y) {
         this.x = x
         this.y = y
     }
     draw(){
-        ctx.fillStyle = "yellow"
+        ctx.fillStyle = "green"
         ctx.beginPath()
         ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI)
         ctx.fill()
@@ -113,7 +116,6 @@ function drawIntersections(){
         intersection.draw()
     }
 }
-
 function drawLines(){
     for (const line of lineArr) {
         line.draw()
@@ -122,10 +124,8 @@ function drawLines(){
 function aim(){
     let angleToMouse = Math.atan2(mouse.y - anchor.y, mouse.x - anchor.x)
     let radius = Math.floor(Math.sqrt(Math.pow(mouse.x - anchor.x, 2)+ Math.pow(mouse.y - anchor.y, 2)))
-    // console.log(angleToMouse)
     let pi = Math.PI
     let degrees = Math.floor(angleToMouse / pi * -180)
-
 
     let snapTo = 0
     let proposedX = anchor.x + radius
@@ -206,7 +206,6 @@ function handleIntersections(){
     drawIntersections()
     if (drawing) aim()
 }
-
 
 function mouseClickIntersect() {
     if (!drawing) {
