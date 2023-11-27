@@ -34,12 +34,8 @@ class KDTree{
         }
         else{
             let median = Math.floor((leftIndex + rightIndex)/2)
-            if (vertical) {
-                node.point = X[median]
-            }
-            else {
-                node.point = Y[median]
-            }
+            if (vertical) node.point = X[median].id
+            else node.point = Y[median].id
             node.isVertical = vertical
 
             partitionField(leftIndex, rightIndex, median)
@@ -83,27 +79,16 @@ class KDTree{
     }
 
     rangeSearch(node){
-        console.log(node)
         if (node.point === null) return
         let [coord, l, r] = (node.isVertical)
-            ? [node.point.x, range.x1, range.x2]
-            : [node.point.y, range.y1, range.y2]
+            ? [inputArr[node.point].x, range.x1, range.x2]
+            : [inputArr[node.point].y, range.y1, range.y2]
 
-        // if (node.isVertical && l <= coord && r >= coord) node.point.xInRange = true
-        // if (!node.isVertical && l <= coord && r >= coord) node.point.yInRange = true
-        // if (node.point.xInRange && node.point.yInRange) outputArr.push(node.point)
-        // console.log(node.point)
-
-        if (l <= coord && r >= coord) node.isInRange = true
-        if (l <= coord && r >= coord) outputArr.push(node.point)
-        // if (node.parentNode !== null &&
-        //     node.isInRange &&
-        //     node.parentNode.point.id === node.point.id &&
-        //     node.parentNode.isInRange)
-        //         outputArr.push(node.point)
-
-        if (l < coord) this.rangeSearch(node.leftChild)
-        if (r > coord) this.rangeSearch(node.rightChild)
+        let x = inputArr[node.point].x
+        let y = inputArr[node.point].y
+        if (x < range.x2 && x > range.x1 && y < range.y2 && y > range.y1) outputArr.push(inputArr[node.point])
+        if (l < coord)                  this.rangeSearch(node.leftChild)
+        if (r > coord)                  this.rangeSearch(node.rightChild)
     }
 }
 
@@ -136,7 +121,7 @@ function mouseClickRangeSearch(){
 
     let root = new Node(null)
     tree = new KDTree(root)
-    root.isVertical = true
+    root.isVertical = false
     tree.constructBalanced2DTree(0, inputArr.length - 1, tree.root, false)
 }
 
@@ -162,6 +147,9 @@ class Point{
         ctx.beginPath()
         ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI)
         ctx.fill()
+        ctx.fillStyle = "green"
+        ctx.font = "16px Arial"
+        ctx.fillText("" + this.id, this.x, this.y)
     }
 }
 function handleRangeSearch(){
