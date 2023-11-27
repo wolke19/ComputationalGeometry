@@ -9,8 +9,9 @@
 <body>
   <form>
     <select id="dropdown">
-      <option value="ch2d" >Convex hull 2D</option>
-      <option value="intersect" >Line segment intersection</option>
+      <option value="tree" >2D-Tree Range Search</option>
+      <option value="ch2d" >Convex Hull 2D</option>
+      <option value="intersect" >ISO Line Segment Intersection</option>
     </select>
   </form>
 
@@ -19,10 +20,12 @@
 
   <div class = "btn-group">
     <button id="reset" type="Button" onclick="resetCanvas()">Reset Canvas</button>
+    <button id="rangeSearch" type="Button" onclick="rangeSearch()">Range Search</button>
   </div>
 
 
   <script src="EventListeners.js"></script>
+  <script src="RangeSearch.js"></script>
   <script src="lineSegmentIntersection.js"></script>
   <script src="ConvexHull2D.js"></script>
   <script src="HelperFunctions.js"></script>

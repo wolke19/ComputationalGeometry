@@ -20,34 +20,10 @@ class StaticPoint{
     constructor(x,y) {
         this.x = x
         this.y = y
-        this.z = 0
         this.size = opts.pointSize
         this.color = opts.pointColor
         this.order = 0
     }
-    draw() {
-        ctx.fillStyle = this.color
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI)
-        ctx.fill()
-    }
-}
-
-class MovingPoint{
-    constructor(x,y, initSpeed, initDir, color) {
-        this.x = x
-        this.y = y
-        this.speed = initSpeed
-        this.dir = initDir
-        this.size = opts.pointSize
-        this.color = color
-    }
-
-    update(){
-        this.x += this.speed * -Math.sin(this.dir)
-        this.y += this.speed * -Math.cos(this.dir)
-    }
-
     draw() {
         ctx.fillStyle = this.color
         ctx.beginPath()
@@ -62,9 +38,7 @@ function wipeCanvas() {
 }
 
 function manageButtons(){
-    for (const element of document.getElementsByClassName('lineIntersect-btn')) {
-        element.hidden = (dropdownSelected !== 'intersect')
-    }
+    document.getElementById("rangeSearch").hidden = (dropdownSelected !== 'tree')
 }
 
 function init(){
@@ -78,6 +52,9 @@ function animate() {
             break
         case "intersect":
             handleIntersections()
+            break
+        case "tree":
+            handleRangeSearch()
             break
     }
     requestAnimationFrame(animate)
@@ -95,6 +72,9 @@ function resetCanvas(){
         case "intersect":
             resetLines()
             resetEvents()
+            break
+        case "tree":
+            resetTree()
             break
     }
 }

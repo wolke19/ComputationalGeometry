@@ -7,11 +7,27 @@ addEventListener("click", function (){
             case "intersect":
                 mouseClickIntersect()
                 break
+            case "tree":
+                mouseClickRangeSearch()
+                break
         }
     }
-
 })
 
+addEventListener("keydown", (e) => {
+    if (e.code === "KeyR") {
+        if (!range.drawing) [range.x1, range.y1] =
+           [Math.floor(mouse.x), Math.floor(mouse.y)]
+        range.drawing = true
+        range.x2 = Math.floor(mouse.x)
+        range.y2 = Math.floor(mouse.y)
+    }
+})
+addEventListener("keyup", (e) => {
+    if (e.code === "KeyR") {
+        range.drawing = false
+    }
+})
 window.addEventListener( 'resize', function(){
     w = canvas.width = window.innerWidth;
     h = canvas.height = window.innerHeight;
