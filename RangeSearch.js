@@ -10,6 +10,7 @@ let X = []
 let Y = []
 let tree
 let treeIsDrawable = false
+let pointSize = 5
 
 
 class Node {
@@ -102,7 +103,7 @@ class KDTree{
         let y = inputArr[node.point].y
 
         if (x < range.x2 && x > range.x1 && y < range.y2 && y > range.y1) inputArr[node.point].color = "red"
-        else inputArr[node.point].color = "blue"
+        else inputArr[node.point].color = "green"
 
         if (l < coord) this.rangeSearch(node.leftChild)
         if (r > coord) this.rangeSearch(node.rightChild)
@@ -171,10 +172,7 @@ function rangeSearch(){
     }
     tree.rangeSearch(tree.root)
 }
-function mouseClickRangeSearch(){
-    resetInputColor()
-    inputArr.push(new Point(Math.floor(mouse.x), Math.floor(mouse.y)))
-    // PREP FOR TREE CONSTRUCTION
+function prepareAndTriggerTreeConstruction(){
     X.length = 0
     Y.length = 0
     for (const point of inputArr) {
@@ -190,6 +188,19 @@ function mouseClickRangeSearch(){
     tree = new KDTree(root)
     treeIsDrawable = true
     tree.constructBalanced2DTree(0, inputArr.length - 1, tree.root, false)
+}
+function mouseClickRangeSearch(){
+    resetInputColor()
+    inputArr.push(new Point(Math.floor(mouse.x), Math.floor(mouse.y)))
+    prepareAndTriggerTreeConstruction()
+
+}
+function insert100RandomPoints(){
+    resetInputColor()
+    for (let i = 0; i < 100; i++) {
+        inputArr.push(new Point(Math.random()*canvas.width, Math.random()*canvas.height))
+    }
+    prepareAndTriggerTreeConstruction()
 }
 function drawRange(){
     ctx.strokeStyle = "red"
@@ -212,7 +223,7 @@ class Point{
     draw(){
         ctx.fillStyle = this.color
         ctx.beginPath()
-        ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI)
+        ctx.arc(this.x, this.y, pointSize, 0, 2 * Math.PI)
         ctx.fill()
     }
 }

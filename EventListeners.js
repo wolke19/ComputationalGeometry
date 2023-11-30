@@ -54,6 +54,10 @@ dropdown.onchange = function () {
     manageButtons()
 }
 
+document.getElementById("pointSize").oninput = function() {
+    pointSize = this.value;
+}
+
 // document.getElementById("pointSizeSlider").oninput = function (){
 //     opts.pointSize = this.value
 // }

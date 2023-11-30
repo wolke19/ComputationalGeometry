@@ -39,6 +39,9 @@ function wipeCanvas() {
 
 function manageButtons(){
     document.getElementById("rangeSearch").hidden = (dropdownSelected !== 'tree')
+    document.getElementById("add100Points").hidden = (dropdownSelected !== 'tree')
+    document.getElementById("pointSize").hidden = (dropdownSelected !== 'tree')
+
 }
 
 function init(){
