@@ -1,5 +1,4 @@
 let inputArr = []
-let outputArr = []
 let range = {
     x1: 0,
     x2: 0,
@@ -10,15 +9,32 @@ let range = {
 let X = []
 let Y = []
 let tree
+let treeIsDrawable = false
 
 
 class Node {
-    constructor() {
+    constructor(parent) {
         this.value = null
         this.leftChild = null
         this.rightChild = null
         this.point = null
         this.isVertical = null
+        this.parent = parent
+
+        // for Tree Map drawing only
+        this.y1 = null
+        this.y2 = null
+        this.x1 = null
+        this.x2 = null
+    }
+    getDepth(){
+        let parent = this.parent
+        let depthCounter = 0
+        while(parent !== null){
+            depthCounter++
+            parent = parent.parent
+        }
+        return depthCounter
     }
 }
 
@@ -26,7 +42,6 @@ class KDTree{
     constructor(root) {
         this.root = root
     }
-
     constructBalanced2DTree(leftIndex, rightIndex, node, vertical){
     //     Folie 19
         if (leftIndex > rightIndex) {
@@ -40,8 +55,8 @@ class KDTree{
 
             partitionField(leftIndex, rightIndex, median)
 
-            node.leftChild = new Node()
-            node.rightChild = new Node()
+            node.leftChild = new Node(node)
+            node.rightChild = new Node(node)
 
             this.constructBalanced2DTree(leftIndex , median-1, node.leftChild, !vertical)
             this.constructBalanced2DTree(median+1, rightIndex, node.rightChild, !vertical)
@@ -77,23 +92,73 @@ class KDTree{
             }
         }
     }
-
     rangeSearch(node){
         if (node.point === null) return
+
         let [coord, l, r] = (node.isVertical)
             ? [inputArr[node.point].x, range.x1, range.x2]
             : [inputArr[node.point].y, range.y1, range.y2]
-
         let x = inputArr[node.point].x
         let y = inputArr[node.point].y
-        if (x < range.x2 && x > range.x1 && y < range.y2 && y > range.y1) outputArr.push(inputArr[node.point])
-        if (l < coord)                  this.rangeSearch(node.leftChild)
-        if (r > coord)                  this.rangeSearch(node.rightChild)
+
+        if (x < range.x2 && x > range.x1 && y < range.y2 && y > range.y1) inputArr[node.point].color = "red"
+        else inputArr[node.point].color = "blue"
+
+        if (l < coord) this.rangeSearch(node.leftChild)
+        if (r > coord) this.rangeSearch(node.rightChild)
+    }
+    drawTreeMap(node, isRightChild){
+        if (node.point === null) return
+        let depth = node.getDepth()
+
+        if (node.isVertical){
+            node.y1 = inputArr[node.parent.point].y
+            node.y2 = (isRightChild) ? canvas.height : 0
+            if (node.getDepth() > 2) {
+                if (isRightChild){
+                    node.y2 = Math.max(node.parent.parent.y1, node.parent.parent.y2)
+                }
+                else{
+                    node.y2 = Math.min(node.parent.parent.y1, node.parent.parent.y2)
+                }
+            }
+            drawVertical(node.y1, node.y2, inputArr[node.point].x)
+        }
+        else {
+            node.x1 = (node.point === this.root.point) ? 0 : inputArr[node.parent.point].x
+            node.x2 = (isRightChild) ? canvas.width : 0
+            if (node.getDepth() > 2) {
+                if (isRightChild){
+                        node.x2 = Math.max(node.parent.parent.x1, node.parent.parent.x2)
+                }
+                else{
+                    node.x2 = Math.min(node.parent.parent.x1, node.parent.parent.x2)
+                }
+            }
+            drawHorizontal(node.x1, node.x2, inputArr[node.point].y)
+        }
+        this.drawTreeMap(node.rightChild, true)
+        this.drawTreeMap(node.leftChild, false)
+
+        function drawVertical(y1, y2, x){
+            ctx.strokeStyle = "grey"
+            ctx.beginPath()
+            ctx.moveTo(x, y1)
+            ctx.lineTo(x, y2)
+            ctx.stroke()
+        }
+        function drawHorizontal(x1, x2, y){
+            ctx.strokeStyle = "grey"
+            ctx.beginPath()
+            ctx.moveTo(x1, y)
+            ctx.lineTo(x2, y)
+            ctx.stroke()
+        }
     }
 }
 
 function rangeSearch(){
-    outputArr.length = 0
+    resetInputColor()
     if (range.x1 > range.x2){
         let temp = range.x1
         range.x1 = range.x2
@@ -106,8 +171,8 @@ function rangeSearch(){
     }
     tree.rangeSearch(tree.root)
 }
-
 function mouseClickRangeSearch(){
+    resetInputColor()
     inputArr.push(new Point(Math.floor(mouse.x), Math.floor(mouse.y)))
     // PREP FOR TREE CONSTRUCTION
     X.length = 0
@@ -120,11 +185,12 @@ function mouseClickRangeSearch(){
     Y.sort((a, b) => {return a.y - b.y})
 
     let root = new Node(null)
-    tree = new KDTree(root)
+    root.point = 0
     root.isVertical = false
+    tree = new KDTree(root)
+    treeIsDrawable = true
     tree.constructBalanced2DTree(0, inputArr.length - 1, tree.root, false)
 }
-
 function drawRange(){
     ctx.strokeStyle = "red"
     ctx.beginPath()
@@ -141,33 +207,34 @@ class Point{
         this.x = x
         this.y = y
         this.id = inputArr.length
+        this.color = "white"
     }
-    draw(color){
-        ctx.fillStyle = color
+    draw(){
+        ctx.fillStyle = this.color
         ctx.beginPath()
         ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI)
         ctx.fill()
-        ctx.fillStyle = "green"
-        ctx.font = "16px Arial"
-        ctx.fillText("" + this.id, this.x, this.y)
     }
 }
 function handleRangeSearch(){
+    if (treeIsDrawable) tree.drawTreeMap(tree.root, true)
     drawPoints()
     drawRange()
 }
 function drawPoints(){
     for (const point of inputArr) {
-        point.draw("white")
-    }
-    for (const point of outputArr) {
-        point.draw("red")
+        point.draw()
     }
 }
 function resetTree(){
+    treeIsDrawable = false
     X.length = 0
     Y.length = 0
     inputArr.length = 0
-    outputArr.length = 0
+}
+function resetInputColor(){
+    for (const point of inputArr) {
+        point.color = "white"
+    }
 }
 

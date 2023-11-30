@@ -26,6 +26,7 @@ addEventListener("keydown", (e) => {
 addEventListener("keyup", (e) => {
     if (e.code === "KeyR") {
         range.drawing = false
+        resetInputColor()
     }
 })
 window.addEventListener( 'resize', function(){
