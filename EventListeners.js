@@ -15,18 +15,35 @@ addEventListener("click", function (){
 })
 
 addEventListener("keydown", (e) => {
-    if (e.code === "KeyR") {
+    if (e.code === "KeyR" && dropdownSelected === "tree") {
         if (!range.drawing) [range.x1, range.y1] =
            [Math.floor(mouse.x), Math.floor(mouse.y)]
         range.drawing = true
         range.x2 = Math.floor(mouse.x)
         range.y2 = Math.floor(mouse.y)
     }
+
 })
 addEventListener("keyup", (e) => {
-    if (e.code === "KeyR") {
+    if (e.code === "KeyR" && dropdownSelected === "tree") {
         range.drawing = false
-        resetInputColor()
+        resetInputColorandType()
+    }
+
+
+    if (e.code === "KeyI" && dropdownSelected === "tree"){
+        let allPoints = inputArr.length
+        let counterinRange = 0
+        let counterTouched = 0
+
+        for (const point of inputArr) {
+            if (point.output === "inRange") counterinRange++
+            if (point.output === "touched") counterTouched++
+        }
+        console.log("Nr. of Points: " + allPoints)
+        console.log("Nr. of touched points: " + counterTouched)
+        console.log("Nr. of points in range: " + counterinRange)
+
     }
 })
 window.addEventListener( 'resize', function(){

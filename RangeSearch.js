@@ -11,6 +11,9 @@ let Y = []
 let tree
 let treeIsDrawable = false
 let pointSize = 5
+let notTouchedColor = "white"
+let touchedColor = "green"
+let inRangeColor = "red"
 
 
 class Node {
@@ -102,8 +105,14 @@ class KDTree{
         let x = inputArr[node.point].x
         let y = inputArr[node.point].y
 
-        if (x < range.x2 && x > range.x1 && y < range.y2 && y > range.y1) inputArr[node.point].color = "red"
-        else inputArr[node.point].color = "green"
+        if (x < range.x2 && x > range.x1 && y < range.y2 && y > range.y1) {
+            inputArr[node.point].color = inRangeColor
+            inputArr[node.point].output = "inRange"
+        }
+        else {
+            inputArr[node.point].color = touchedColor
+            inputArr[node.point].output = "touched"
+        }
 
         if (l < coord) this.rangeSearch(node.leftChild)
         if (r > coord) this.rangeSearch(node.rightChild)
@@ -159,7 +168,7 @@ class KDTree{
 }
 
 function rangeSearch(){
-    resetInputColor()
+    resetInputColorandType()
     if (range.x1 > range.x2){
         let temp = range.x1
         range.x1 = range.x2
@@ -190,14 +199,14 @@ function prepareAndTriggerTreeConstruction(){
     tree.constructBalanced2DTree(0, inputArr.length - 1, tree.root, false)
 }
 function mouseClickRangeSearch(){
-    resetInputColor()
+    resetInputColorandType()
     inputArr.push(new Point(Math.floor(mouse.x), Math.floor(mouse.y)))
     prepareAndTriggerTreeConstruction()
 
 }
 function insert100RandomPoints(){
-    resetInputColor()
-    for (let i = 0; i < 100; i++) {
+    resetInputColorandType()
+    for (let i = 0; i < 1000; i++) {
         inputArr.push(new Point(Math.random()*canvas.width, Math.random()*canvas.height))
     }
     prepareAndTriggerTreeConstruction()
@@ -219,6 +228,7 @@ class Point{
         this.y = y
         this.id = inputArr.length
         this.color = "white"
+        this.output = "notTouched"
     }
     draw(){
         ctx.fillStyle = this.color
@@ -243,9 +253,10 @@ function resetTree(){
     Y.length = 0
     inputArr.length = 0
 }
-function resetInputColor(){
+function resetInputColorandType(){
     for (const point of inputArr) {
         point.color = "white"
+        point.output = "notTouched"
     }
 }
 
