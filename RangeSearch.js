@@ -41,7 +41,6 @@ class Node {
         return depthCounter
     }
 }
-
 class KDTree{
     constructor(root) {
         this.root = root
@@ -166,9 +165,24 @@ class KDTree{
         }
     }
 }
+class Point{
+    constructor(x, y) {
+        this.x = x
+        this.y = y
+        this.id = inputArr.length
+        this.color = "white"
+        this.output = "notTouched"
+    }
+    draw(){
+        ctx.fillStyle = this.color
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, pointSize, 0, 2 * Math.PI)
+        ctx.fill()
+    }
+}
 
 function rangeSearch(){
-    resetInputColorandType()
+    resetInputColorAndType()
     if (range.x1 > range.x2){
         let temp = range.x1
         range.x1 = range.x2
@@ -199,17 +213,28 @@ function prepareAndTriggerTreeConstruction(){
     tree.constructBalanced2DTree(0, inputArr.length - 1, tree.root, false)
 }
 function mouseClickRangeSearch(){
-    resetInputColorandType()
+    resetInputColorAndType()
     inputArr.push(new Point(Math.floor(mouse.x), Math.floor(mouse.y)))
     prepareAndTriggerTreeConstruction()
 
 }
 function insert100RandomPoints(){
-    resetInputColorandType()
+    resetInputColorAndType()
     for (let i = 0; i < 1000; i++) {
         inputArr.push(new Point(Math.random()*canvas.width, Math.random()*canvas.height))
     }
     prepareAndTriggerTreeConstruction()
+}
+
+function handleRangeSearch(){
+    if (treeIsDrawable) tree.drawTreeMap(tree.root, true)
+    drawPoints()
+    drawRange()
+}
+function drawPoints(){
+    for (const point of inputArr) {
+        point.draw()
+    }
 }
 function drawRange(){
     ctx.strokeStyle = "red"
@@ -221,39 +246,13 @@ function drawRange(){
     ctx.lineTo(range.x1, range.y1)
     ctx.stroke()
 }
-
-class Point{
-    constructor(x, y) {
-        this.x = x
-        this.y = y
-        this.id = inputArr.length
-        this.color = "white"
-        this.output = "notTouched"
-    }
-    draw(){
-        ctx.fillStyle = this.color
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, pointSize, 0, 2 * Math.PI)
-        ctx.fill()
-    }
-}
-function handleRangeSearch(){
-    if (treeIsDrawable) tree.drawTreeMap(tree.root, true)
-    drawPoints()
-    drawRange()
-}
-function drawPoints(){
-    for (const point of inputArr) {
-        point.draw()
-    }
-}
 function resetTree(){
     treeIsDrawable = false
     X.length = 0
     Y.length = 0
     inputArr.length = 0
 }
-function resetInputColorandType(){
+function resetInputColorAndType(){
     for (const point of inputArr) {
         point.color = "white"
         point.output = "notTouched"

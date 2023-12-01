@@ -1,23 +1,14 @@
 let pointArr = [],
     hullArr = [],
-    useGraham = true
-function handleConvexHull2D(){
-    if (pointArr.length > 0){
-        for (const anchorArrElement of pointArr) {
-            anchorArrElement.draw()
-        }
-    }
-    drawLineFromPointArr(hullArr, 3, true)
-}
-function mouseClickCh2d(){
-    insertPointWithCheck(pointArr)
-    fillHullArr()
-}
+
+    useGraham = true,
+    drawDelaunay = false
+
 
 function fillHullArr() {
     if (pointArr.length < 3) return
     // Grahams Scan
-    if (false){
+    if (useGraham){
         hullArr = []
 
         // set p0 to lowest point. Why doesnt leftmost point work???
@@ -93,15 +84,80 @@ function fillHullArr() {
     }
     function pointIsLeftOfLine(lineStart, lineEnd, point){
         let dotProd =   (lineEnd.x - lineStart.x) * (point.y - lineStart.y) -
-                                (lineEnd.y - lineStart.y) * (point.x - lineStart.x)
+            (lineEnd.y - lineStart.y) * (point.x - lineStart.x)
         return (dotProd > 0)
     }
 }
+function triangulateDeLaunay(){
 
+}
+
+class StaticPoint{
+    constructor(x,y) {
+        this.x = x
+        this.y = y
+        this.size = opts.pointSize
+        this.color = opts.pointColor
+        this.order = 0
+    }
+    draw() {
+        ctx.fillStyle = this.color
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI)
+        ctx.fill()
+    }
+}
+
+function handleConvexHull2D(){
+    drawPointsFromPointArr()
+    drawLineFromPointArr(3)
+}
 function resetConvexHull2D() {
     pointArr.length = 0
     hullArr.length = 0
 }
+function drawLineFromPointArr(minPoints){
+    ctx.beginPath()
+    if (hullArr.length >= minPoints){
+        ctx.moveTo(hullArr[0].x, hullArr[0].y)
+        for (const point of hullArr) {
+            ctx.lineTo(point.x, point.y)
+        }
+        ctx.strokeStyle = opts.pointColor
+        ctx.closePath()
+        ctx.stroke()
+    }
+}
+function drawPointsFromPointArr(){
+    if (pointArr.length > 0){
+        for (const anchorArrElement of pointArr) {
+            anchorArrElement.draw()
+        }
+    }
+}
+
+function mouseClickConvexHull(){
+    insertPointWithCheck(mouse.x, mouse.y)
+    fillHullArr()
+}
+function insertPointWithCheck(x, y){
+    let existingPoint = false
+    if (pointArr.length > 0){
+        for (let i = 0; i < pointArr.length; i++) {
+            if (x < pointArr[i].x + pointArr[i].size*2 &&
+                x > pointArr[i].x - pointArr[i].size*2 &&
+                y < pointArr[i].y + pointArr[i].size*2 &&
+                y > pointArr[i].y - pointArr[i].size*2) {
+                existingPoint = true
+                pointArr.splice(i,1)
+                break
+            }
+        }
+    }
+    if (!existingPoint) pointArr.push(new StaticPoint(mouse.x, mouse.y))
+}
+
+
 
 
 
