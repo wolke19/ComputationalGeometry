@@ -84,6 +84,8 @@ class KDTree{
                     }
                 }
 
+                // TODO Abkürzen durch direkten vergleich mit Koordinaten
+
                 if (goesInPartition2) partition2.push(partitionArr[i])
                 else partition1.push(partitionArr[i])
             }
@@ -218,7 +220,7 @@ function mouseClickRangeSearch(){
     prepareAndTriggerTreeConstruction()
 
 }
-function insert100RandomPoints(){
+function insert100RandomPointsKDTree(){
     resetInputColorAndType()
     for (let i = 0; i < 1000; i++) {
         inputArr.push(new Point(Math.random()*canvas.width, Math.random()*canvas.height))

@@ -129,6 +129,16 @@ dropdown.onchange = function () {
 document.getElementById("pointSize").oninput = function() {
     pointSize = this.value;
 }
+function insert100Points(){
+    switch (dropdownSelected){
+        case "tree":
+            insert100RandomPointsKDTree()
+            break
+        case "ch2d":
+            insert100RandomPointsComplexHull()
+            break
+    }
+}
 
 // background
 window.addEventListener( 'resize', function(){
